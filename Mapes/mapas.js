@@ -56,6 +56,6 @@ addEventListener("drop", (event) => {
         errors = errors + 1;
     }
     if(punts > 400){
-        alert("Molt be "+ nom + " has completat el joc amb " + errors + "  Errors");
+        alert("Molt be  has completat el joc amb " + errors + "  Errors");
     }
 });
