@@ -1,9 +1,5 @@
-.dragover{
-    background-color: rgb(255, 0, 0);
-}
-.be{
-    background-color: greenyellow;
-}
-.malament{
-    background-color: red;
+div.nom{
+    position: absolute;
+    top: 10px;
+    right: 30px;
 }
