@@ -73,72 +73,74 @@ const keyMap = {
 { element: document.getElementById('k69'), key: 'KeyE', soundFile: './sounds/c1.mp3' }, 
 ];
 
-  function init() {
-	TouchEmulator();
-  
+function init() {
+    TouchEmulator();
 
-  
-	function playSound(sound) {
-	  sound.pause();
-	  sound.currentTime = 0;
-	  sound.play();
-	}
-  
-	// allKeys.forEach(key => {
-	//   key.addEventListener('mousedown', () => {
-	// 	key.classList.add('activa');
-	//   });
-  
-	//   key.addEventListener('touchstart', (event) => {
-	// 	event.preventDefault(); // Sirve para evitar que se haga scroll al tocar la pantalla
-	// 	key.classList.add('activa');
-	//   });
-	// });
-  
-	keyElements.forEach(function(key) {
-	  if (key.element) {
-		window.addEventListener("keydown", function (event) {
-			if (event.code === key.key || 
-				(event.code === "KeyK" && key.key === "KeyR") ||
-				(event.code === "KeyL" && key.key === "KeyT") ||
-				(event.code === "Semicolon" && key.key === "KeyY") ||
-				(event.code === "KeyQ" && key.key === "KeyG") ||
-				(event.code === "KeyW" && key.key === "KeyH") ||
-				(event.code === "KeyE" && key.key === "KeyJ")) {
-			  let audio = new Audio(key.soundFile);
-			  playSound(audio);
-			  key.element.classList.add("activa");
-			}
-		  });
-  
-		  window.addEventListener('keyup', function(event) {
-			if (event.code === key.key || 
-				(event.code === 'KeyK' && key.key === 'KeyR') || 
-				(event.code === 'KeyL' && key.key === 'KeyT') || 
-				(event.code === 'Semicolon' && key.key === 'KeyY') || 
-				(event.code === 'KeyQ' && key.key === 'KeyG') || 
-				(event.code === 'KeyW' && key.key === 'KeyH') || 
-				(event.code === 'KeyE' && key.key === 'KeyJ')) {
-			  key.element.classList.remove('activa');
-			}
-		  });
-  
-		key.element.addEventListener('touchstart', function(event) {
-		  event.preventDefault();
-		  for (let i = 0; i < event.changedTouches.length; i++) {
-			let audio = new Audio(key.soundFile);
-			playSound(audio);
-			key.element.classList.add('activa');
-		  }
-		});
-  
-		key.element.addEventListener('touchend', function(event) {
-		  event.preventDefault();
-		  for (let i = 0; i < event.changedTouches.length; i++) {
-			key.element.classList.remove('activa');
-		  }
-		});
-	  }
-	});
-  }
-  init();
+    function playSound(sound) {
+        sound.pause();
+        sound.currentTime = 0;
+        sound.play();
+    }
+
+    $(document).on('mouseup', function(event) {
+        $.each(keyElements, function(index, key) {
+            if (key.element) {
+                $(key.element).removeClass('activa');
+            }
+        });
+    });
+
+    $.each(keyElements, function(index, key) {
+        if (key.element) {
+            $(window).on("keydown", function (event) {
+                if (event.code === key.key || 
+                    (event.code === "KeyK" && key.key === "KeyR") ||
+                    (event.code === "KeyL" && key.key === "KeyT") ||
+                    (event.code === "Semicolon" && key.key === "KeyY") ||
+                    (event.code === "KeyQ" && key.key === "KeyG") ||
+                    (event.code === "KeyW" && key.key === "KeyH") ||
+                    (event.code === "KeyE" && key.key === "KeyJ")) {
+                    let audio = new Audio(key.soundFile);
+                    playSound(audio);
+                    $(key.element).addClass("activa");
+                }
+            });
+
+            $(window).on('keyup', function(event) {
+                if (event.code === key.key || 
+                    (event.code === 'KeyK' && key.key === 'KeyR') || 
+                    (event.code === 'KeyL' && key.key === 'KeyT') || 
+                    (event.code === 'Semicolon' && key.key === 'KeyY') || 
+                    (event.code === 'KeyQ' && key.key === 'KeyG') || 
+                    (event.code === 'KeyW' && key.key === 'KeyH') || 
+                    (event.code === 'KeyE' && key.key === 'KeyJ')) {
+                    $(key.element).removeClass('activa');
+                }
+            });
+
+            $(key.element).on('mousedown', function(event) {
+                event.preventDefault();
+                let audio = new Audio(key.soundFile);
+                playSound(audio);
+                $(key.element).addClass('activa');
+            });
+
+            $(key.element).on('touchstart', function(event) {
+                event.preventDefault();
+                for (let i = 0; i < event.changedTouches.length; i++) {
+                    let audio = new Audio(key.soundFile);
+                    playSound(audio);
+                    $(key.element).addClass('activa');
+                }
+            });
+
+            $(key.element).on('touchend', function(event) {
+                event.preventDefault();
+                for (let i = 0; i < event.changedTouches.length; i++) {
+                    $(key.element).removeClass('activa');
+                }
+            });
+        }
+    });
+}
+init();
