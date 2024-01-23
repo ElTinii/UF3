@@ -1,6 +1,10 @@
 // Alumnos: Alejandro Vázquez Carrión y Alberto Morcillo Montejo
 'use strict';
 
+/*
+Objeto que contiene el código de la tecla y el código de la tecla modificada.
+Ejemplo: KeyA = 65 significa que la tecla A del teclado fisico corresponde al código 65
+*/
 const keyMap = {
     'KeyA': '65',
     'KeyS': '83',
@@ -33,8 +37,10 @@ const keyMap = {
     'Digit9': '57',
     'Digit0': '48',
 };
-  
 
+/*
+Array de objetos que contiene los elementos de tecla, la tecla asociada y el archivo de sonido
+*/
   const keyElements = [
 { element: document.getElementById('k65'), key: 'KeyA', soundFile: './sounds/c1.mp3' },
 { element: document.getElementById('k83'), key: 'KeyS', soundFile: './sounds/d1.mp3' },
@@ -82,14 +88,23 @@ function init() {
         sound.play();
     }
 
-    $(document).on('mouseup', function(event) {
-        $.each(keyElements, function(index, key) {
-            if (key.element) {
-                $(key.element).removeClass('activa');
-            }
-        });
-    });
-
+/*
+	Se ejecuta cuando se libera el botón del ratón.
+	Elimina la clase 'activa' de todos los elementos de tecla
+*/
+    // $(document).on('mouseup', function(event) {
+    //     $.each(keyElements, function(index, key) {
+    //         if (key.element) {
+    //             $(key.element).removeClass('activa');
+    //         }
+    //     });
+    // });
+/*
+	Itera sobre cada elemento en keyElements.
+	El del keydown maneja el evento cuando se presiona una telca.
+	Si coincide con la tecla que hemos asociado al elemento de la iteración
+	se crea un nuevo objeto Audio.
+*/
     $.each(keyElements, function(index, key) {
         if (key.element) {
             $(window).on("keydown", function (event) {
@@ -105,7 +120,7 @@ function init() {
                     $(key.element).addClass("activa");
                 }
             });
-
+// Lo mismo que con el keydown pero para el keyup
             $(window).on('keyup', function(event) {
                 if (event.code === key.key || 
                     (event.code === 'KeyK' && key.key === 'KeyR') || 
@@ -117,30 +132,49 @@ function init() {
                     $(key.element).removeClass('activa');
                 }
             });
+/**
+ * Se ejecuta cuando se presiona el botón del ratón. Crea un nuevo objeto audio con el archivo
+ * de sonido asociado. Reproduce el sonido y añade la clase 'activa' al elemento de la iteración.
+ */
+            // $(key.element).on('mousedown', function(event) {
+            //     event.preventDefault();
+            //     let audio = new Audio(key.soundFile);
+            //     playSound(audio);
+            //     $(key.element).addClass('activa');
+            // });
 
-            $(key.element).on('mousedown', function(event) {
-                event.preventDefault();
-                let audio = new Audio(key.soundFile);
-                playSound(audio);
-                $(key.element).addClass('activa');
-            });
-
-            $(key.element).on('touchstart', function(event) {
-                event.preventDefault();
-                for (let i = 0; i < event.changedTouches.length; i++) {
-                    let audio = new Audio(key.soundFile);
-                    playSound(audio);
-                    $(key.element).addClass('activa');
-                }
-            });
-
-            $(key.element).on('touchend', function(event) {
-                event.preventDefault();
-                for (let i = 0; i < event.changedTouches.length; i++) {
-                    $(key.element).removeClass('activa');
-                }
-            });
-        }
-    });
+			$(document).on('touchstart', function(event) {
+				event.preventDefault();
+				for (let i = 0; i < event.changedTouches.length; i++) {
+					let touch = event.changedTouches[i];
+					let elementTouched = touch.target;
+					let key = keyElements.find(k => k.element === elementTouched);
+					if (key) {
+						// Si el sonido ya está reproduciéndose, lo detiene
+						if (key.audio && !key.audio.paused) {
+							key.audio.pause();
+							key.audio.currentTime = 0;
+						}
+						// Comienza a reproducir el nuevo sonido
+						key.audio = new Audio(key.soundFile);
+						playSound(key.audio);
+						$(key.element).addClass('activa');
+					}
+				}
+			});
+			
+			$(document).on('touchend', function(event) {
+				event.preventDefault();
+				for (let i = 0; i < event.changedTouches.length; i++) {
+					let touch = event.changedTouches[i];
+					let elementTouched = touch.target;
+					let key = keyElements.find(k => k.element === elementTouched);
+					if (key) {
+						$(key.element).removeClass('activa');
+					}
+				}
+			});
+		}
+	});
 }
 init();
