@@ -1,3 +1,4 @@
+//Fet per: Alex Vazquez i Alberto Morcillo
 let path = document.querySelectorAll("path"); //Aqui estem obtenint tots els path
 let dragged;
 let punts = 0;
